@@ -24,7 +24,7 @@ type LogEntry struct {
 // parseLogLine parses a single log line into a LogEntry
 func parseLogLine(line string) *LogEntry {
 	timestampPattern := regexp.MustCompile(`-->(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})`)
-	pmIdPattern := regexp.MustCompile(`(^\d+)\|YELO`)
+	pmIdPattern := regexp.MustCompile(`(^\d+)\|[^\|]+?\s\|`)
 	serverPattern := regexp.MustCompile(`\|([^\|]+?)\s\|`)
 	modulePattern := regexp.MustCompile(`:----:\s(.*)\s:=:`)
 	apiPattern := regexp.MustCompile(`:=:\s(.*)\s:=:`)
