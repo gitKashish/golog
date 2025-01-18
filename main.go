@@ -17,17 +17,20 @@ type LogEntry struct {
 	Server    string                 `json:"server,omitempty"`
 	Module    string                 `json:"module,omitempty"`
 	Api       string                 `json:"api,omitempty"`
-	Event     string                 `json:"event,omitempty"`
 	Details   map[string]interface{} `json:"details,omitempty"`
 	Raw       string                 `json:"-"`
 }
 
 // Parses a single log line into a LogEntry
 func parseLogLine(line string) *LogEntry {
+	if strings.Trim(line, " ") == "" {
+		return nil
+	}
+
 	timestampPattern := regexp.MustCompile(`-->(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})`)
 	pmIdPattern := regexp.MustCompile(`(^\d+)\|[^\|]+?\s\|`)
 	serverPattern := regexp.MustCompile(`\|([^\|]+?)\s\|`)
-	modulePattern := regexp.MustCompile(`:----:\s(.*)\s:=:`)
+	modulePattern := regexp.MustCompile(`:----:\s(.*)\s:=:\s.*\s:=:`)
 	apiPattern := regexp.MustCompile(`:=:\s(.*)\s:=:`)
 	detailsPattern := regexp.MustCompile(`:----:\s.*\s:=:\s.*\s:=:\s(.+)`)
 
@@ -63,9 +66,6 @@ func parseLogLine(line string) *LogEntry {
 		var details map[string]interface{}
 		if err := json.Unmarshal([]byte(matches[1]), &details); err == nil {
 			entry.Details = details
-			if event, exists := details["EVENT"]; exists {
-				entry.Event = fmt.Sprintf("%v", event)
-			}
 		}
 	}
 
@@ -76,23 +76,22 @@ func parseLogLine(line string) *LogEntry {
 func formatLogEntry(entry *LogEntry) string {
 	if entry.Details != nil {
 		prettyDetails, _ := json.MarshalIndent(entry.Details, "", "  ")
-		return fmt.Sprintf("Timestamp: %s\nPM ID: %s\nServer: %s\nModule: %s\nAPI: %s\nEvent: %s\nDetails:\n%s\n%s\n",
+		return fmt.Sprintf("Timestamp: %s\nPM ID: %s\nServer: %s\nModule: %s\nAPI: %s\nDetails:\n%s\n",
 			entry.Timestamp,
 			entry.PmId,
 			entry.Server,
 			entry.Module,
 			entry.Api,
-			entry.Event,
-			string(prettyDetails),
-			strings.Repeat("-", 80))
+			string(prettyDetails))
 	}
-	return entry.Raw
+	return entry.Raw + "\n"
 }
 
 // Writes a LogEntry to a file
 func writeLogEntriesToFile(logEntries []string, file *os.File) error {
 	for _, logEntry := range logEntries {
-		_, err := file.WriteString(logEntry)
+		entry := logEntry + strings.Repeat("-", 80) + "\n"
+		_, err := file.WriteString(entry)
 		if err != nil {
 			err = fmt.Errorf("error writing to file %s", file.Name())
 			return err
@@ -182,7 +181,9 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		entry := parseLogLine(line)
-		entries = append(entries, formatLogEntry(entry))
+		if entry != nil {
+			entries = append(entries, formatLogEntry(entry))
+		}
 	}
 
 	if *outFilePath != "" {
@@ -203,7 +204,8 @@ func main() {
 
 	if *outFilePath == "" || *showLogs {
 		// Writing logs to console
-		for _, entry := range entries {
+		for _, logEntry := range entries {
+			entry := logEntry + strings.Repeat("-", 80) + "\n"
 			fmt.Println(entry)
 		}
 	}
