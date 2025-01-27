@@ -2,16 +2,53 @@
 
 ## Usage
 ```yaml
-Usage   : golog -source=<source_file_path> [-target=<output_file_path>] [-show]
-Options :
-  -source : File path of source file with unformatted logs. (required)
-  -target : File path where you want to store the formatted logs. File is created if it does not exist.
-  -show   : Set flag to print formatted logs on console even if -target flag is set
+Usage:
+  golog [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  show        A brief description of your command
+  write       A brief description of your command
+
+Flags:
+  -h, --help   help for golog
+
+Use "golog [command] --help" for more information about a command.
+```
+
+#### golog `show`
+```yaml
+Usage:
+  golog show [flags]
+
+Flags:
+  -h, --help           help for show
+  -i, --input string   Path to input file (required)
+```
+
+#### golog `write`
+```yaml
+Usage:
+  golog write [flags]
+
+Flags:
+  -h, --help            help for write
+  -i, --input string    Path to input file (required)
+  -o, --output string   Path to output file (required)
+  -s, --show            Show output on console
 ```
 
 ## Getting started
 Go v1.23.4 was used in development
-   
+
+Install binary and run
+```bash
+$ go install github.com/gitkashish/golog
+$ golog --help
+```
+
+Compile yourself
 ```bash
 # Clone the repository
 $ git clone https://github.com/gitKashish/golog.git
