@@ -20,8 +20,7 @@ var writeCmd = &cobra.Command{
 
 		logEntries := []string{}
 		for _, line := range sourceLines {
-			logEntry := core.ParseLogLine(line)
-			formattedLog := core.FormatLogEntry(logEntry)
+			formattedLog := core.ParseLogLine(line)
 			logEntries = append(logEntries, formattedLog)
 			if showOutput {
 				fmt.Print(formattedLog)
