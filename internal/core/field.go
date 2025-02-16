@@ -24,6 +24,7 @@ const (
 	String
 	Timestamp
 	JSON
+	Default
 )
 
 var fieldTypeMap = map[string]FieldType{

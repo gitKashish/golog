@@ -33,7 +33,12 @@ func (template *Template) Parse(sourceLog string) error {
 	fields := template.sourceRegex.FindStringSubmatch(sourceLog)
 	// Check if log matches format or not
 	if fields == nil {
-		return fmt.Errorf("log does not match source pattern")
+		fmt.Println("log does not match source pattern")
+		template.Fields[0].fieldType = Default
+		template.Fields[0].fieldName = ""
+		template.Fields[0].fieldValue = sourceLog
+		template.fieldNames = nil
+		return nil
 	}
 
 	// Setting field values to corresponding capture group values
@@ -50,7 +55,9 @@ func (template *Template) Parse(sourceLog string) error {
 }
 
 func (template *Template) Execute() string {
-
+	if template.Fields[0].fieldType == Default {
+		return template.Fields[0].fieldValue
+	}
 	formattedLog := template.literals.Target
 	for _, field := range template.Fields {
 		fieldRegex := regexp.MustCompile("@" + field.fieldName + "@")
