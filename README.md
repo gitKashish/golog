@@ -1,89 +1,129 @@
-`golog` (go-log) is a simple log parsing tool.
+# golog
 
-## Usage
+`golog` is a simple and efficient log parsing and formatting tool.  It allows you to define templates to extract and present log data in a structured and readable way.
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/gitKashish/golog)](https://goreportcard.com/report/github.com/gitKashish/golog) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+## 🚀 Getting Started
+
+### Installation
+
+#### Binary Installation (Recommended)
+
+```bash
+# Install the latest version
+go install github.com/gitKashish/golog@latest
+```
+
+This will install the `golog` binary to your `$GOPATH/bin` directory (or `$GOBIN` if set). Make sure this directory is in your `PATH`.
+
+#### Building from Source
+
+```bash
+# Clone repository
+git clone https://github.com/gitKashish/golog.git
+
+# Build binary
+cd golog
+go build
+```
+
+This will create a `golog` executable in your current directory.
+
+### Creating `template.yaml`
+
+`golog` relies on a `template.yaml` file to define how logs should be parsed and formatted. Create this file in the same directory as the `golog` binary.
+
+## 📄 Template Format
+
+The `template.yaml` file defines two key templates: `sourceTemplate` and `targetTemplate`.
+
+### 1. `sourceTemplate`
+
+The `sourceTemplate` describes the structure of your *incoming* log lines. It uses a specific format for defining fields:
+
+```
+@fieldName-fieldType@
+```
+
+*   **`fieldName`:** The name of the field (must be unique, alphanumeric characters and underscores only).
+*   **`fieldType`:** The data type of the field.
+
+Supported Field Types:
+
+| Type      | Symbol | Description                                                              |
+| --------- | :----: | ------------------------------------------------------------------------ |
+| Raw       | `raw`  | Value is returned as is (no formatting).                               |
+| Number    | `number` | Value is treated as a number.                                           |
+| String    | `string` | Value is treated as a string.                                          |
+| JSON      | `json`  | Value is parsed as a JSON string and pretty-printed.                   |
+| Timestamp | `timestamp` | Value is parsed as a timestamp and formatted into RFC822Z format. |
+| Default   | N/A    | Used internally when the log doesn't match the `sourceTemplate`.        |
+
+### 2. `targetTemplate`
+
+The `targetTemplate` defines how the *output* should be formatted. It uses the field names defined in the `sourceTemplate`:
+
+```
+@fieldName@
+```
+
+A field name can be used multiple times in the `targetTemplate`.
+
+## ✨ Example
+
+**Log Input:**
+
+```
+5|3022  | -->2025-01-24 07:29:52.954 :----: users :=: updateJobStatus :=: {"EVENT":"deleteNotificationTaskFromScheduler","ERROR":{"errno":-110,"code":"ETIMEDOUT","syscall":"connect","address":"52.41.75.101","port":3013}}
+```
+
+**`template.yaml`:**
+
 ```yaml
-Usage:
-  golog [command]
-
-Available Commands:
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  show        A brief description of your command
-  write       A brief description of your command
-
-Flags:
-  -h, --help   help for golog
-
-Use "golog [command] --help" for more information about a command.
+sourceTemplate: "@server-number@|@instance-number@  | -->@time-timestamp@ :----: @module-string@ :=: @api-string@ :=: @details-json@"
+targetTemplate: |
+  ---------------------------
+  Server: @server@
+  Instance: @instance@
+  Timestamp: @time@
+  API: @api@
+  Module : @module@
+  Details: @details@
+  ---------------------------
 ```
 
-#### golog `show`
-```yaml
-Usage:
-  golog show [flags]
+## 🔎 Usage
 
-Flags:
-  -h, --help           help for show
-  -i, --input string   Path to input file (required)
-```
+### `golog write`
 
-#### golog `write`
-```yaml
-Usage:
-  golog write [flags]
+Formats log and writes to a specified file.
 
-Flags:
-  -h, --help            help for write
-  -i, --input string    Path to input file (required)
-  -o, --output string   Path to output file (required)
-  -s, --show            Show output on console
-```
-
-## Getting started
-Go v1.23.4 was used in development
-
-Install binary and run
 ```bash
-$ go install github.com/gitkashish/golog
-$ golog --help
+golog write -i <input_file> -o <output_file> [-s]
 ```
 
-Compile yourself
+*   `-i, --input string`: Path to the input log file (required).
+*   `-o, --output string`: Path to the output file (required).
+*   `-s, --show`: Also print the output to the console.
+
+### `golog show`
+
+Formats log and prints the output to the console.
+
 ```bash
-# Clone the repository
-$ git clone https://github.com/gitKashish/golog.git
-$ cd golog
-
-# Build the executable
-$ go build
-
-# Run the executable
-$ ./golog -source="./source/file/path" -target="./target/file/path" -show
+golog show -i <input_file>
 ```
 
-## I/O Format 
-> TODO : make it general purpose
-#### Source Log Template
-```bash
-12|SERVERNAME | ---->2025-01-18 02:40:20.111 :----: module_name :=: api_name :=: {"EVENT" : "LOG DATA",..., "ARR_DATA": [23,43,19]}
-```
+*   `-i, --input string`: Path to the input log file (required).
 
-#### Output format
-```bash
-Timestamp: 2025-01-18 02:40:20.111
-PM ID: 12
-Server: SERVERNAME
-Module: module_name
-API: api_name
-Details:
-{
-  "EVENT": "LOG DATA",
-  ...,
-  "ARR_DATA": [
-    23,
-    43,
-    19
-  ]  
-}
---------------------------------------------------------------------------------
-```
+## ⚙️ Development
+
+Go v1.20 or later is recommended.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## 📄 License
+This project is licensed under the GNU Lesser General Public License v3.0. See the [LICENSE](LICENSE) file for details.
