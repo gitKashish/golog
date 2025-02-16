@@ -15,8 +15,8 @@ var showCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sourceLines := helpers.ReadFileToArray(inputFilePath)
 		for _, line := range sourceLines {
-			logEntry := core.ParseLogLine(line)
-			fmt.Print(core.FormatLogEntry(logEntry))
+			formattedLog := core.ParseLogLine(line)
+			fmt.Println(formattedLog)
 		}
 
 		return nil
