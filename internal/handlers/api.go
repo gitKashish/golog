@@ -29,21 +29,20 @@ func handleFormat(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(response, err.Error())
 	}
 
-	template, err := core.GetTemplateFromLiterals(request.FormValue("source_template"), request.FormValue("source_template"))
+	template, err := core.GetTemplateFromLiterals(request.FormValue("source_template"), request.FormValue("target_template"))
 	if err != nil {
 		response.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(response, err.Error())
 	}
 
-	logs := ""
+	var logs string
 	for line := range strings.Lines(request.FormValue("log")) {
-		template.Parse(line)
-		logs = logs + template.Execute()
+		logs = logs + template.Parse(line)
 	}
 
 	data := map[string]any{
 		"Log": logs,
 	}
 
-	tmpl.ExecuteTemplate(response, "log.form.field", data)
+	tmpl.ExecuteTemplate(response, "form.log", data)
 }

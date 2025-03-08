@@ -21,8 +21,7 @@ var showCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		for _, line := range sourceLines {
-			template.Parse(line)
-			fmt.Print(template.Execute())
+			fmt.Print(template.Parse(line))
 		}
 
 		return nil

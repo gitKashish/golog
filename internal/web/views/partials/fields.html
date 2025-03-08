@@ -1,0 +1,17 @@
+{{ define "form.log" }}
+<div id="log" class="flex-grow flex">
+    <textarea class="w-full mv-4 p-2 border rounded-md focus:ring focus:ring-blue-300" name="log">{{ .Log }}</textarea>
+</div>
+{{ end }}
+
+{{ define "form.template.source" }}
+<div id="source_template" class="flex-grow flex">
+    <textarea class="w-full mv-4 p-2 border rounded-md focus:ring focus:ring-blue-300" name="source_template"></textarea>
+</div>
+{{ end }}
+
+{{ define "form.template.target" }}
+<div id="target_template" class="flex-grow flex">
+    <textarea class="w-full mv-4 p-2 border rounded-md focus:ring focus:ring-blue-300" name="target_template"></textarea>
+</div>
+{{ end }}

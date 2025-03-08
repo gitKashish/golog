@@ -25,8 +25,7 @@ var writeCmd = &cobra.Command{
 		}
 		logEntries := []string{}
 		for _, line := range sourceLines {
-			template.Parse(line)
-			formattedLog := template.Execute()
+			formattedLog := template.Parse(line)
 			logEntries = append(logEntries, formattedLog)
 			if showOutput {
 				fmt.Print(formattedLog)

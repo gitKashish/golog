@@ -28,39 +28,29 @@ type Template struct {
 }
 
 // Function to parse log
-func (template *Template) Parse(sourceLog string) {
+func (template *Template) Parse(sourceLog string) string {
 	// Retrieve field values from source log
 	fields := template.sourceRegex.FindStringSubmatch(sourceLog)
+	fieldValues := map[string]string{}
 	// Check if log matches format or not
 	if fields == nil {
-		fmt.Println("log does not match source pattern")
-		template.Fields[0].fieldType = Default
-		template.Fields[0].fieldName = ""
-		template.Fields[0].fieldValue = sourceLog
-		template.fieldNames = nil
-		return
-	}
-
-	// Setting field values to corresponding capture group values
-	count := 1
-	for _, field := range template.Fields {
-		field.fieldValue = fields[count]
-		field.Format()
-		count++
-		if count >= len(fields) {
-			break
+		return sourceLog
+	} else {
+		// Map Field Names and their corresponding values
+		count := 1
+		for _, field := range template.Fields {
+			fieldValues[field.fieldName] = field.Format(fields[count])
+			count++
+			if count >= len(fields) {
+				break
+			}
 		}
 	}
-}
 
-func (template *Template) Execute() string {
-	if template.Fields[0].fieldType == Default {
-		return template.Fields[0].fieldValue
-	}
 	formattedLog := template.literals.Target
 	for _, field := range template.Fields {
 		fieldRegex := regexp.MustCompile("@" + field.fieldName + "@")
-		formattedLog = fieldRegex.ReplaceAllString(formattedLog, field.fieldValue)
+		formattedLog = fieldRegex.ReplaceAllString(formattedLog, fieldValues[field.fieldName])
 	}
 	return formattedLog
 }
@@ -107,7 +97,7 @@ func (template *Template) parseSourceTemplate() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		template.Fields = append(template.Fields, &Field{match[1], "", fieldType}) // Add new field
+		template.Fields = append(template.Fields, &Field{match[1], fieldType}) // Add new field
 	}
 }
 
