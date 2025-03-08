@@ -28,7 +28,7 @@ type Template struct {
 }
 
 // Function to parse log
-func (template *Template) Parse(sourceLog string) error {
+func (template *Template) Parse(sourceLog string) {
 	// Retrieve field values from source log
 	fields := template.sourceRegex.FindStringSubmatch(sourceLog)
 	// Check if log matches format or not
@@ -38,7 +38,7 @@ func (template *Template) Parse(sourceLog string) error {
 		template.Fields[0].fieldName = ""
 		template.Fields[0].fieldValue = sourceLog
 		template.fieldNames = nil
-		return nil
+		return
 	}
 
 	// Setting field values to corresponding capture group values
@@ -51,7 +51,6 @@ func (template *Template) Parse(sourceLog string) error {
 			break
 		}
 	}
-	return nil
 }
 
 func (template *Template) Execute() string {
@@ -137,13 +136,26 @@ func getSourceRegex(sourceTemplate string, sourceFieldRegex regexp.Regexp) *rege
 	return sourceRegex
 }
 
-// Function to get the template for parsing log entries
-func GetTemplate() (*Template, error) {
+// Getting template values from template.yaml file
+func GetTemplateFromFile() (*Template, error) {
 	literals, err := loadTemplateLiterals()
 	if err != nil {
 		return nil, err
 	}
+	return GetTemplate(literals)
+}
 
+// Getting Template by directly sending source and target template strings
+func GetTemplateFromLiterals(sourceTemplate, targetTemplate string) (*Template, error) {
+	literals := templateLiterals{
+		Source: sourceTemplate,
+		Target: targetTemplate,
+	}
+	return GetTemplate(literals)
+}
+
+// Function to get the template for parsing log entries
+func GetTemplate(literals templateLiterals) (*Template, error) {
 	template := Template{
 		literals:   literals,
 		fieldNames: make(map[string]bool),
