@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -21,11 +20,9 @@ func NewAppHandler() *http.ServeMux {
 
 // Render Home Page
 func handleHome(response http.ResponseWriter, request *http.Request) {
-	fmt.Print(tmpl.DefinedTemplates())
-
 	data := map[string]any{
 		"Title": "Test Title",
+		"Log":   "",
 	}
-
 	tmpl.ExecuteTemplate(response, "index.html", data)
 }

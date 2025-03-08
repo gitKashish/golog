@@ -1,3 +1,17 @@
 {{ define "log.form" }}
-This is the form
+<div class="bg-white p-6 shadow-md w-screen min-h-screen flex flex-col">
+    <h2 class="text-2xl font-bold mb-4 text-center">Format Logs in One Click 🚀</h2>
+
+    <form id="textForm" hx-post="/api/format" hx-target="#log" hx-swap="outerHTML"
+        class="w-full flex flex-col flex-grow">
+        
+        <!-- Input Field -->
+        {{ template "log.form.field" }}
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full mt-4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+            Submit
+        </button>
+    </form>
+</div>
 {{ end }}
