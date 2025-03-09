@@ -4,7 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	server "github.com/gitkashish/golog/internal"
+	server "github.com/gitKashish/golog/internal"
 	"github.com/spf13/cobra"
 )
 

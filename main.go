@@ -1,6 +1,6 @@
 package main
 
-import "github.com/gitkashish/golog/cmd"
+import "github.com/gitKashish/golog/cmd"
 
 func main() {
 	cmd.Execute()

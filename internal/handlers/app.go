@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/gitkashish/golog/internal/web"
+	"github.com/gitKashish/golog/internal/web"
 )
 
 var tmpl *template.Template = web.NewTemplate()

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gitkashish/golog/internal/core"
+	"github.com/gitKashish/golog/internal/core"
 )
 
 func NewAPIHandler() *http.ServeMux {

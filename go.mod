@@ -1,4 +1,4 @@
-module github.com/gitkashish/golog
+module github.com/gitKashish/golog
 
 go 1.24.1
 

@@ -5,7 +5,7 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/gitkashish/golog/internal/helpers"
+	"github.com/gitKashish/golog/internal/helpers"
 	"gopkg.in/yaml.v3"
 )
 

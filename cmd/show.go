@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gitkashish/golog/internal/core"
-	"github.com/gitkashish/golog/internal/helpers"
+	"github.com/gitKashish/golog/internal/core"
+	"github.com/gitKashish/golog/internal/helpers"
 	"github.com/spf13/cobra"
 )
 
