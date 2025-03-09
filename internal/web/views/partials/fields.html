@@ -1,17 +1,26 @@
-{{ define "form.log" }}
-<div id="log" class="flex-grow flex">
-    <textarea class="w-full mv-4 p-2 border rounded-md focus:ring focus:ring-blue-300" name="log">{{ .Log }}</textarea>
+{{ define "form.log.raw" }}
+<div id="log" class="flex flex-col space-y-2 h-full">
+    <label for="log" class="text-sm font-medium text-gray-300 tracking-[0.25rem]">RAW LOGS</label>
+    <textarea id="raw_log"
+        class="w-full h-full p-3 font-mono border border-gray-700 rounded-lg transition-all duration-300 focus:outline-none hover:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] focus:ring focus:ring-blue-500/30 bg-black/30 backdrop-blur-md shadow-lg text-gray-200 resize-none"
+        name="raw_log" spellcheck="false"></textarea>
 </div>
 {{ end }}
 
 {{ define "form.template.source" }}
-<div id="source_template" class="flex-grow flex">
-    <textarea class="w-full mv-4 p-2 border rounded-md focus:ring focus:ring-blue-300" name="source_template"></textarea>
+<div class="flex flex-col space-y-2 h-1/2">
+    <label for="source_template" class="text-sm font-medium text-gray-300 tracking-[0.25rem]">SOURCE TEMPLATE</label>
+    <textarea id="source_template"
+        class="w-full h-full p-3 font-mono border border-gray-700 rounded-lg transition-all duration-300 focus:outline-none hover:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] focus:ring focus:ring-blue-500/30 bg-black/30 backdrop-blur-md shadow-lg text-gray-200 resize-none"
+        name="source_template" spellcheck="false"></textarea>
 </div>
 {{ end }}
 
-{{ define "form.template.target" }}
-<div id="target_template" class="flex-grow flex">
-    <textarea class="w-full mv-4 p-2 border rounded-md focus:ring focus:ring-blue-300" name="target_template"></textarea>
+{{ define "form.template.target"}}
+<div class="flex flex-col space-y-2 h-1/2">
+    <label for="target_template" class="text-sm font-medium text-gray-300 tracking-[0.25rem]">TARGET TEMPLATE</label>
+    <textarea id="target_template"
+        class="w-full h-full p-3 font-mono border border-gray-700 rounded-lg transition-all duration-300 focus:outline-none hover:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] focus:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] focus:ring focus:ring-blue-500/30 bg-black/30 backdrop-blur-md shadow-lg text-gray-200 resize-none"
+        name="target_template" spellcheck="false"></textarea>
 </div>
 {{ end }}

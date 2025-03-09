@@ -22,6 +22,7 @@ func handleGreet(response http.ResponseWriter, request *http.Request) {
 	response.Write([]byte("Hello, World!"))
 }
 
+// Handle Log formatting requests and sending textfield with formatted logs back
 func handleFormat(response http.ResponseWriter, request *http.Request) {
 	err := request.ParseForm()
 	if err != nil {
@@ -35,14 +36,14 @@ func handleFormat(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(response, err.Error())
 	}
 
-	var logs string
-	for line := range strings.Lines(request.FormValue("log")) {
-		logs = logs + template.Parse(line)
+	logs := []string{}
+	for line := range strings.Lines(request.FormValue("raw_log")) {
+		logs = append(logs, template.Parse(line))
 	}
 
 	data := map[string]any{
-		"Log": logs,
+		"Logs": logs,
 	}
 
-	tmpl.ExecuteTemplate(response, "form.log", data)
+	tmpl.ExecuteTemplate(response, "form.log.pretty", data)
 }

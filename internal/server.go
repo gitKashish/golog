@@ -28,6 +28,6 @@ func (server *Server) Serve() error {
 	appHandler := handlers.NewAppHandler()
 	router.Handle("/app/", http.StripPrefix("/app", appHandler))
 
-	fmt.Printf("starting server on http://localhost%s", addr)
+	fmt.Printf("GOLOG - Starting Server\nWeb App : http://localhost%s/app/\nAPI : http://localhost%s/api/", addr, addr)
 	return http.ListenAndServe(addr, router)
 }
