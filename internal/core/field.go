@@ -13,9 +13,8 @@ import (
 type FieldType int
 
 type Field struct {
-	fieldName  string
-	fieldValue string
-	fieldType  FieldType
+	fieldName string
+	fieldType FieldType
 }
 
 const (
@@ -24,7 +23,6 @@ const (
 	String
 	Timestamp
 	JSON
-	Default
 )
 
 var fieldTypeMap = map[string]FieldType{
@@ -57,26 +55,26 @@ func FieldTypeFromString(name string) (FieldType, error) {
 }
 
 // Function to format a Field based on fieldType
-func (field *Field) Format() {
+func (field *Field) Format(value string) string {
 	switch field.fieldType {
 	case Number:
-		return
+		return value
 	case String:
-		return
+		return value
 	case Timestamp:
-		formattedTime, err := time.Parse(time.RFC1123Z, field.fieldValue)
+		formattedTime, err := time.Parse(time.RFC1123Z, value)
 		if err != nil {
-			return
+			return value
 		}
-		field.fieldValue = formattedTime.String()
+		return formattedTime.String()
 	case JSON:
 		formattedJson := bytes.Buffer{}
-		err := json.Indent(&formattedJson, []byte(field.fieldValue), "", "  ")
+		err := json.Indent(&formattedJson, []byte(value), "", "  ")
 		if err != nil {
-			return
+			return value
 		}
-		field.fieldValue = formattedJson.String()
+		return formattedJson.String()
 	default:
-		return
+		return value
 	}
 }

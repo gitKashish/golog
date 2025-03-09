@@ -28,40 +28,29 @@ type Template struct {
 }
 
 // Function to parse log
-func (template *Template) Parse(sourceLog string) error {
+func (template *Template) Parse(sourceLog string) string {
 	// Retrieve field values from source log
 	fields := template.sourceRegex.FindStringSubmatch(sourceLog)
+	fieldValues := map[string]string{}
 	// Check if log matches format or not
 	if fields == nil {
-		fmt.Println("log does not match source pattern")
-		template.Fields[0].fieldType = Default
-		template.Fields[0].fieldName = ""
-		template.Fields[0].fieldValue = sourceLog
-		template.fieldNames = nil
-		return nil
-	}
-
-	// Setting field values to corresponding capture group values
-	count := 1
-	for _, field := range template.Fields {
-		field.fieldValue = fields[count]
-		field.Format()
-		count++
-		if count >= len(fields) {
-			break
+		return sourceLog
+	} else {
+		// Map Field Names and their corresponding values
+		count := 1
+		for _, field := range template.Fields {
+			fieldValues[field.fieldName] = field.Format(fields[count])
+			count++
+			if count >= len(fields) {
+				break
+			}
 		}
 	}
-	return nil
-}
 
-func (template *Template) Execute() string {
-	if template.Fields[0].fieldType == Default {
-		return template.Fields[0].fieldValue
-	}
 	formattedLog := template.literals.Target
 	for _, field := range template.Fields {
 		fieldRegex := regexp.MustCompile("@" + field.fieldName + "@")
-		formattedLog = fieldRegex.ReplaceAllString(formattedLog, field.fieldValue)
+		formattedLog = fieldRegex.ReplaceAllString(formattedLog, fieldValues[field.fieldName])
 	}
 	return formattedLog
 }
@@ -108,7 +97,7 @@ func (template *Template) parseSourceTemplate() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		template.Fields = append(template.Fields, &Field{match[1], "", fieldType}) // Add new field
+		template.Fields = append(template.Fields, &Field{match[1], fieldType}) // Add new field
 	}
 }
 
@@ -137,13 +126,26 @@ func getSourceRegex(sourceTemplate string, sourceFieldRegex regexp.Regexp) *rege
 	return sourceRegex
 }
 
-// Function to get the template for parsing log entries
-func GetTemplate() (*Template, error) {
+// Getting template values from template.yaml file
+func GetTemplateFromFile() (*Template, error) {
 	literals, err := loadTemplateLiterals()
 	if err != nil {
 		return nil, err
 	}
+	return GetTemplate(literals)
+}
 
+// Getting Template by directly sending source and target template strings
+func GetTemplateFromLiterals(sourceTemplate, targetTemplate string) (*Template, error) {
+	literals := templateLiterals{
+		Source: sourceTemplate,
+		Target: targetTemplate,
+	}
+	return GetTemplate(literals)
+}
+
+// Function to get the template for parsing log entries
+func GetTemplate(literals templateLiterals) (*Template, error) {
 	template := Template{
 		literals:   literals,
 		fieldNames: make(map[string]bool),

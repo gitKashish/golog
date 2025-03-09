@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/gitkashish/golog/internal/core"
 	"github.com/gitkashish/golog/internal/helpers"
@@ -17,10 +18,14 @@ var writeCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sourceLines := helpers.ReadFileToArray(inputFilePath)
-
+		template, err := core.GetTemplateFromFile()
+		if err != nil {
+			fmt.Print(err.Error())
+			os.Exit(1)
+		}
 		logEntries := []string{}
 		for _, line := range sourceLines {
-			formattedLog := core.ParseLogLine(line)
+			formattedLog := template.Parse(line)
 			logEntries = append(logEntries, formattedLog)
 			if showOutput {
 				fmt.Print(formattedLog)

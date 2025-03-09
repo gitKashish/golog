@@ -1,0 +1,51 @@
+{{ define "log.form" }}
+<div class="h-full w-full items-center justify-center">
+    <div class="w-full h-full flex flex-col p-6">
+        <h2 onclick="location.reload()"
+            class="text-4xl font-bold text-center text-gray-200 mb-2 hover:tracking-[0.75rem] tracking-[0.25rem] font-thin transition-all duration-300 cursor-pointer">GOLOG
+        </h2>
+
+        <form id="textForm" hx-post="/api/format" hx-target="#textForm" hx-swap="outerHTML"
+            class="w-full h-full max-h-full grid grid-cols-2 gap-6 p-6">
+
+            <!-- Left Side (Source, Target, Submit) -->
+            <div class="flex flex-col h-full max-h-full space-y-4">
+                {{ template "form.template.source" }}
+                {{ template "form.template.target" }}
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="border border-blue-700 bg-blue-700 text-gray-200 backdrop-blur-md shadow-lg text-lg py-3 rounded-lg transition-all duration-300 hover:text-gray-400 hover:bg-black/30 hover:border-gray-700 hover:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)] font-thin tracking-[0.25rem] hover:tracking-[0.5rem] w-full focus:outline-none focus:tracking-[0.5rem] focus:text-gray-400 focus:bg-black/30 focus:border-gray-700 focus:shadow-[0_0_15px_3px_rgba(59,130,246,0.3)]">
+                    FORMAT LOGS
+                </button>
+            </div>
+
+            <!-- Right Side (Log Output) -->
+            <div class="h-full max-h-full flex flex-col space-y-2">
+                {{ template "form.log.raw" }}
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    // Fetch template value if already stored in localStorage
+    let source_template = localStorage.getItem("source_template") || "";
+    let target_template = localStorage.getItem("target_template") || "";
+    let raw_log = localStorage.getItem("raw_log") || "";
+    document.getElementById("source_template").value = source_template;
+    document.getElementById("target_template").value = target_template;
+    document.getElementById("raw_log").value = raw_log;
+
+    // Function to update values in localStorage on input change
+    function updateTemplateValue(event) {
+        localStorage.setItem(event.target.id, event.target.value);
+    }
+
+    // Attach event listeners to update localStorage on input
+    document.getElementById("raw_log").addEventListener("input", updateTemplateValue);
+    document.getElementById("source_template").addEventListener("input", updateTemplateValue);
+    document.getElementById("target_template").addEventListener("input", updateTemplateValue);
+</script>
+{{ end }}

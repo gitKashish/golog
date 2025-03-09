@@ -1,0 +1,20 @@
+{{ define "base.layout.start" }}
+<html lang="en">
+
+<head>
+    <title>{{ .Title }}</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+
+<body hx-boost="true" class="items-center h-screen w-screen max-h-screen max-w-screen bg-gradient-to-br from-gray-900 to-black">
+    <main>
+{{ end }}
+
+{{ define "base.layout.end" }}
+    </main>
+
+</body>
+
+</html>
+{{ end }}
