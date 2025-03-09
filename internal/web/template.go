@@ -1,10 +1,14 @@
 package web
 
-import "html/template"
+import (
+	"embed"
+	"html/template"
+)
+
+//go:embed views/*
+var views embed.FS
 
 func NewTemplate() *template.Template {
-	tmpl := template.Must(template.ParseGlob("internal/web/views/layouts/*.html"))
-	template.Must(tmpl.ParseGlob("internal/web/views/partials/*.html"))
-	template.Must(tmpl.ParseGlob("internal/web/views/*.html"))
+	tmpl := template.Must(template.ParseFS(views, "views/layouts/*.html", "views/partials/*.html", "views/*.html"))
 	return tmpl
 }
