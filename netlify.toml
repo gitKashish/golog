@@ -1,0 +1,7 @@
+[build]
+  command = "go build -o ./"
+  publish = "."
+
+[dev]
+  command = "./golog serve --port 8888"
+  port = 8888
