@@ -3,18 +3,31 @@ package cmd
 import (
 	"os"
 
+	"github.com/gitKashish/golog/internal/config"
+	"github.com/gitKashish/golog/pkg/logger"
 	"github.com/spf13/cobra"
 )
 
-var inputFilePath string
+var (
+	// Configuration
+	cfg *config.Config
+
+	// Command flags
+	inputFilePath string
+	verbose       bool
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "golog",
 	Short: "A simple tool to format your logs.",
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if verbose {
+			if verbose {
+				logger.SetLevel(logger.DEBUG)
+			}
+		}
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -27,5 +40,9 @@ func Execute() {
 }
 
 func init() {
+	// Initialize configuration
+	cfg = config.NewConfig()
 
+	// Add persistent flags that are valid for all commands
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "debug", "d", false, "Enable verbose output for debugging")
 }
