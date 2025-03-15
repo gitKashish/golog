@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// Config holds all the configuration for the application
+// Config holds all configuration for the application
 type Config struct {
 	// Server configuration
 	Server ServerConfig
@@ -13,11 +13,13 @@ type Config struct {
 	Template TemplateConfig
 }
 
+// ServerConfig holds configuration for the HTTP server
 type ServerConfig struct {
 	// Port to run the server on
 	Port int
 }
 
+// TemplateConfig holds configuration for log templates
 type TemplateConfig struct {
 	// Path to the template file
 	TemplatePath string

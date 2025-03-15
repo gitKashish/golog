@@ -22,10 +22,9 @@ var rootCmd = &cobra.Command{
 	Use:   "golog",
 	Short: "A simple tool to format your logs.",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		// Set log level based on verbose flag
 		if verbose {
-			if verbose {
-				logger.SetLevel(logger.DEBUG)
-			}
+			logger.SetLevel(logger.DEBUG)
 		}
 	},
 }
@@ -44,5 +43,5 @@ func init() {
 	cfg = config.NewConfig()
 
 	// Add persistent flags that are valid for all commands
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "debug", "d", false, "Enable verbose output for debugging")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose output")
 }

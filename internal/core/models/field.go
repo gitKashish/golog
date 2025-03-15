@@ -1,4 +1,4 @@
-package core
+package models
 
 import (
 	"bytes"
@@ -12,9 +12,10 @@ import (
 // Fields are formatted depending on the field type
 type FieldType int
 
+// Field represents a field in a log entry
 type Field struct {
-	fieldName string
-	fieldType FieldType
+	Name string
+	Type FieldType
 }
 
 const (
@@ -33,7 +34,7 @@ var fieldTypeMap = map[string]FieldType{
 	"json":      JSON,
 }
 
-// Get corresponding field type name
+// String returns the string representation of a FieldType
 func (fieldType FieldType) String() string {
 	// Map field type names to corresponding FieldType
 	names := [...]string{"raw", "number", "string", "timestamp", "json"}
@@ -45,7 +46,7 @@ func (fieldType FieldType) String() string {
 	return names[fieldType]
 }
 
-// Function to get FieldType from corresponding string
+// FieldTypeFromString converts a string to a FieldType
 func FieldTypeFromString(name string) (FieldType, error) {
 	fieldType, ok := fieldTypeMap[name]
 	if !ok {
@@ -54,9 +55,9 @@ func FieldTypeFromString(name string) (FieldType, error) {
 	return fieldType, nil
 }
 
-// Function to format a Field based on fieldType
+// Format formats a field value based on its type
 func (field *Field) Format(value string) string {
-	switch field.fieldType {
+	switch field.Type {
 	case Number:
 		return value
 	case String:

@@ -1,0 +1,2 @@
+sourceTemplate: "@timestamp-timestamp@ @level-string@ @message-string@"
+targetTemplate: "[@timestamp@] @level@: @message@"

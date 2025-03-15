@@ -2,39 +2,63 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/gitKashish/golog/internal/core"
-	"github.com/gitKashish/golog/internal/helpers"
+	"github.com/gitKashish/golog/internal/core/formatter"
+	"github.com/gitKashish/golog/internal/core/parser"
+	"github.com/gitKashish/golog/pkg/fileutil"
+	"github.com/gitKashish/golog/pkg/logger"
 	"github.com/spf13/cobra"
 )
 
-var outputFilePath string
-var showOutput bool
+var (
+	outputFilePath string
+	showOutput     bool
+)
 
 // writeCmd represents the write command
 var writeCmd = &cobra.Command{
 	Use:   "write",
-	Short: "A brief description of your command",
+	Short: "Write formatted logs to a file",
+	Long:  `Read logs from a file, format them according to the template, and write them to another file.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		sourceLines := helpers.ReadFileToArray(inputFilePath)
-		template, err := core.GetTemplateFromFile()
+		// Create file utility
+		fileUtil := fileutil.NewFileUtil()
+
+		// Read source lines from file
+		sourceLines, err := fileUtil.ReadLines(inputFilePath)
 		if err != nil {
-			fmt.Print(err.Error())
-			os.Exit(1)
+			logger.Error("Error reading file: %v", err)
+			return err
 		}
-		logEntries := []string{}
-		for _, line := range sourceLines {
-			formattedLog := template.Parse(line)
-			logEntries = append(logEntries, formattedLog)
-			if showOutput {
-				fmt.Print(formattedLog)
+
+		// Create parser and formatter
+		p := parser.NewTemplateParser()
+		err = p.LoadTemplate(cfg.Template.TemplatePath)
+		if err != nil {
+			logger.Error("Error loading template: %v", err)
+			return err
+		}
+
+		f := formatter.NewTemplateFormatter(p)
+
+		// Format logs
+		formattedLogs := f.FormatLogs(sourceLines)
+
+		// Show output if requested
+		if showOutput {
+			for _, log := range formattedLogs {
+				fmt.Println(log)
 			}
 		}
 
-		helpers.WriteArrayToFile(logEntries, outputFilePath)
-		fmt.Printf("Logs written to %v", outputFilePath)
+		// Write to output file
+		err = fileUtil.WriteLines(formattedLogs, outputFilePath)
+		if err != nil {
+			logger.Error("Error writing to file: %v", err)
+			return err
+		}
 
+		logger.Info("Logs written to %s", outputFilePath)
 		return nil
 	},
 }
